@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
-router.post('/', (req, res) => res.status(200).send('POST /home succeeded'));
+const homeController = require('../controllers/home.controler');
+
+router.post('/', homeController.login);
 
 module.exports = router;
