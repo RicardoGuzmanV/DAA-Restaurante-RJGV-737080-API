@@ -1,29 +1,13 @@
 const express = require('express');
-const bodyParser = require('body-parser');
-const cors = require('cors');
-
 const app = express();
-app.use(bodyParser.json());
-app.use(cors());
+const port = process.env.port | 3000;
 
-const port = 3000;
+const homeRoutes = require('./routes/home.routes');
+const reservationsRoutes = require('./routes/reservations.routes');
+const usersRoutes = require('./routes/users.routes');
 
-const users = [
-    {
-        name: 'Ricardo',
-        color: 'Rojo'
-    },
-    {
-        name: 'Pedro',
-        color: 'Verde'
-    },
-    {
-        name: 'Isai',
-        color: 'Azul'
-    }
-];
+app.use('/', homeRoutes);
+app.use('/reservations', reservationsRoutes);
+app.use('/users', usersRoutes);
 
-app.get('/', (req, res) => res.send('Restaurant API working!'));
-app.get('/users', (req, res) => res.json(users));
-
-app.listen(port, () => console.log(`Server listening at port 3000`));
+app.listen(port, () => console.log('Server listening at port ' + port));    
