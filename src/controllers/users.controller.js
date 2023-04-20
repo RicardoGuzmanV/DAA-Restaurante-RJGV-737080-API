@@ -1,8 +1,10 @@
+const bcrypty = require('bcrypt');
+
 const User = require('../models/user.model');
 
 const getAllUsers = async (req, res, next) => {
     try{
-        const allUsers = await User.find().select('password');
+        const allUsers = await User.find().select("-password -token");
         return res.status(200).json(allUsers);
     } catch (error) {
         return next(error);
@@ -11,15 +13,23 @@ const getAllUsers = async (req, res, next) => {
 
 const createUser = async (req, res, next) => {
     try{
-        const newUser = new User({ ...req.body });
+        const { username, name, password } = req.body;
+        const encyptedPassword = await bcrypty.hash(password, 10);
+
+        const newUser = new User({ 
+            username: username.toLowerCase(),
+            name,
+            password: encyptedPassword
+         });
+        
         const insertedUser = await newUser.save();
         const returnUser = insertedUser.toObject();
         delete returnUser.password;
-        return res.status(201).json(returnUser);
+        return res.status(201).json(insertedUser);
     } catch (error) {
         return next(error);
     }
-};  
+};
 
 const deleteUser = async (req, res, next) =>{
  try{
