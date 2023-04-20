@@ -1,29 +1,30 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const cors = require('cors');
+const mongoose = require('mongoose');
+require('dotenv').config();
+
+
+const homeRoutes = require('./src/routes/home.routes');
+const reservationsRoutes = require('./src/routes/reservations.routes');
+const usersRoutes = require('./src/routes/users.routes');
 
 const app = express();
 app.use(bodyParser.json());
-app.use(cors());
+app.use(bodyParser.urlencoded({ extended: true }))
 
-const port = 3000;
+app.use('/', homeRoutes);
+app.use('/reservations', reservationsRoutes);
+app.use('/users', usersRoutes);
 
-const users = [
-    {
-        name: 'Ricardo',
-        color: 'Rojo'
-    },
-    {
-        name: 'Pedro',
-        color: 'Verde'
-    },
-    {
-        name: 'Isai',
-        color: 'Azul'
+const main = async () => {
+    try {
+        await mongoose.connect(process.env.DB_URL);
+        app.listen(process.env.PORT, () => console.log('Server listening at port ' + process.env.PORT));
+    } catch(error) {
+        console.error(error);
+        process.exit(1);
     }
-];
+};
 
-app.get('/', (req, res) => res.send('Restaurant API working!'));
-app.get('/users', (req, res) => res.json(users));
+main();
 
-app.listen(port, () => console.log(`Server listening at port 3000`));
