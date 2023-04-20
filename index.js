@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 const mongoose = require('mongoose');
 require('dotenv').config();
 
@@ -11,7 +12,8 @@ const usersRoutes = require('./src/routes/users.routes');
 
 const app = express();
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }))
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cors());
 
 app.use('/', homeRoutes);
 app.use('/reservations', reservationsRoutes);
